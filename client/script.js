@@ -9,14 +9,14 @@ sendBtn.disabled = true
 sendBtn.addEventListener("click", sendMsg, false)
 
 function sendMsg() {
-	const text = myInput.value
-	msgGeneration(text, "Client")
-	mywsServer.send(text)
+	const obj = {text: myInput.value} 
+	msgGeneration(obj, "Client")
+	mywsServer.send(obj)
 }
 
 function msgGeneration(msg, from) {
 	const newMessage = document.createElement("h5")
-	newMessage.innerText = `${from} says: ${msg}`
+	newMessage.innerText = `${from} says: ${msg.text}`
 	myMessages.appendChild(newMessage)
 }
 
@@ -25,6 +25,7 @@ mywsServer.onopen = function() {
 }
 
 mywsServer.onmessage = function(event) {
+		console.log(event)
 	const {data} = event
 	msgGeneration(data, "Server")
 }

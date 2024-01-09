@@ -15,11 +15,32 @@ wsServer.on("connection", function(ws) {
 	ws.on("message", function(msg) {
 		wsServer.clients.forEach(function each(client) {
 			if (client.readyState === WebSocket.OPEN) {
-				client.send(msg.toString());
+				client.send(msg.text.toString());
 			}
 		})
 	})
 })
+
+// wsServer.on('connection', function (ws) {
+// 	ws.on('message', function (msg) {
+// 	  try {
+// 		const receivedObject = JSON.parse(msg);
+// 		if (receivedObject && receivedObject.text) {
+// 		  const messageToSend = receivedObject.text.toString();
+  
+// 		  wsServer.clients.forEach(function each(client) {
+// 			if (client !== ws && client.readyState === WebSocket.OPEN) {
+// 			  client.send(messageToSend);
+// 			}
+// 		  });
+// 		} else {
+// 		  console.error('Invalid message format received');
+// 		}
+// 	  } catch (error) {
+// 		console.error('Error parsing JSON:', error);
+// 	  }
+// 	});
+//   });
 
 myServer.on("upgrade", async function upgrade(request, socket, head) {
 	if(Math.random() > 0.5) {
