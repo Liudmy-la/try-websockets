@@ -11,7 +11,7 @@ sendBtn.addEventListener("click", sendMsg, false)
 function sendMsg() {
 	const obj = {text: myInput.value} 
 	msgGeneration(obj, "Client")
-	mywsServer.send(obj)
+	mywsServer.send(JSON.stringify(obj))
 }
 
 function msgGeneration(msg, from) {
@@ -25,7 +25,6 @@ mywsServer.onopen = function() {
 }
 
 mywsServer.onmessage = function(event) {
-		console.log(event)
-	const {data} = event
-	msgGeneration(data, "Server")
+	const receivedObj = JSON.parse(event.data);
+	msgGeneration(receivedObj, "Server")
 }
