@@ -1,33 +1,47 @@
-import * as express from 'express';
-import * as http from 'http';
-import * as WebSocket from 'ws';
+import WebSocket from "ws";
+import express from "express";
+import http from "http";
+import path from "path";
 
 const app = express();
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const myServer = http.createServer(app);
 
-wss.on('connection', (ws: WebSocket) => {
-  // Send a welcome message on connection
-  ws.send('Welcome to the WebSocket server!');
+app.use("/", express.static(path.resolve(__dirname, "../client")))
 
-  // Listen for messages from clients
-  ws.on('message', (message: string) => {
-    console.log(`Received message: ${message}`);
+const wsServer = new WebSocket.Server({
+	noServer: true
+})
 
-    // Broadcast the message to all clients
-    wss.clients.forEach((client) => {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message);
-      }
-    });
-  });
+interface WebSocketClient {
+	send: (data: WebSocket.Data) => void;
+	readyState: number;
+}
+
+wsServer.on('connection', function (ws: WebSocket, req: any) {  
+	ws.on('message', function (msg: string) {
+		const receivedObj = JSON.parse(msg);
+		console.log('parsedObj:', receivedObj);
+
+		// Broadcast the message to all clients
+		wsServer.clients.forEach(function each (client: WebSocketClient) {
+			if (client.readyState === WebSocket.OPEN) {
+				client.send(JSON.stringify(receivedObj));
+				console.log('stringify:', JSON.stringify(receivedObj))
+			}
+		});
+	});
 });
 
-// Serve static files from the public directory
-app.use(express.static('client'));
+
+myServer.on("upgrade", async function upgrade(request, socket, head) {
+	wsServer.handleUpgrade(request, socket, head, function done(ws: WebSocket) {
+		wsServer.emit('connection', ws, request);
+	});
+}); 
+
 
 // Start the server
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+const PORT = 9876;
+myServer.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 }); 
