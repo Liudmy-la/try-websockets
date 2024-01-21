@@ -4,10 +4,10 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node server/index.ts",
-    "build": "tsc",
-    "start": "node dist/server/index.js"
+	"test": "echo \"Error: no test specified\" && exit 1",
+	"dev": "ts-node server/index.ts",
+	"build": "tsc --watch",
+	"start": "node dist/server/index.js"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +19,6 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
-    "@types/compression": "^1.7.5",
     "@types/express": "^4.17.21",
     "@types/ws": "^8.5.10",
     "ts-node": "^10.9.2",

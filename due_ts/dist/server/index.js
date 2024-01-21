@@ -47,8 +47,8 @@ var app = (0, express_1.default)();
 var myServer = http_1.default.createServer(app);
 var wsServer = new ws_1.default.Server({ noServer: true });
 var PORT = 9876;
-app.use("/", express_1.default.static(path_1.default.resolve(__dirname, "../client")));
-console.log(path_1.default.resolve(__dirname, "../client"));
+app.use("/", express_1.default.static(path_1.default.resolve(__dirname, '../client/index.html')));
+console.log("path.resolve", path_1.default.resolve(__dirname, '../client/index.html'));
 wsServer.on('connection', function (ws) {
     ws.on('message', function (msg) {
         var receivedObj = JSON.parse(msg);
