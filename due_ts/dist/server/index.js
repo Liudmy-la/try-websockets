@@ -45,11 +45,11 @@ var http_1 = __importDefault(require("http"));
 var path_1 = __importDefault(require("path"));
 var app = (0, express_1.default)();
 var myServer = http_1.default.createServer(app);
+var wsServer = new ws_1.default.Server({ noServer: true });
+var PORT = 9876;
 app.use("/", express_1.default.static(path_1.default.resolve(__dirname, "../client")));
-var wsServer = new ws_1.default.Server({
-    noServer: true
-});
-wsServer.on('connection', function (ws, req) {
+console.log(path_1.default.resolve(__dirname, "../client"));
+wsServer.on('connection', function (ws) {
     ws.on('message', function (msg) {
         var receivedObj = JSON.parse(msg);
         console.log('parsedObj:', receivedObj);
@@ -72,8 +72,6 @@ myServer.on("upgrade", function upgrade(request, socket, head) {
         });
     });
 });
-// Start the server
-var PORT = 9876;
 myServer.listen(PORT, function () {
     console.log("Server is listening on port ".concat(PORT));
 });

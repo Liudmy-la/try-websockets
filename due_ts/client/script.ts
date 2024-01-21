@@ -1,26 +1,29 @@
 const url = "ws://localhost:9876/myWebsocket"
 const mywsServer = new WebSocket(url)
 
-const myMessages = document.getElementById("messages") as HTMLDivElement;
-const myInput = document.getElementById("message") as HTMLInputElement;
-const sendBtn = document.getElementById("send") as HTMLButtonElement;
+const myMessages = document.querySelector<HTMLElement>("#messages");
+const myInput = document.querySelector<HTMLInputElement>("#message");
+const sendBtn = document.querySelector<HTMLButtonElement>("#send");
 
-sendBtn.disabled = true;
+if (sendBtn) {
+	sendBtn.disabled = true;
+}
 
 interface MessageObject {
-	text: string;
-	nic: string;
+	text?: string;
+	nic?: string;
 }
 
 function msgGeneration(msg: MessageObject, from: string) {
 	const newMessage = document.createElement("h5");
 	newMessage.innerText = `${from} send: ${msg.text} from ${msg.nic}`;
-	myMessages.appendChild(newMessage);
+
+	myMessages?.appendChild(newMessage);
 }
 
 function sendMsg() {
 	const obj: MessageObject = {
-		text: myInput.value,
+		text: myInput?.value,
 		nic: window.navigator.appName,
 	};
 
@@ -30,9 +33,11 @@ function sendMsg() {
 	console.log('obj to send: ', JSON.stringify(obj));
 }
 
-sendBtn.addEventListener("click", sendMsg, false);
+sendBtn?.addEventListener("click", sendMsg, false);
 mywsServer.onopen = function() {
-	sendBtn.disabled = false;
+	if (sendBtn) {
+		sendBtn.disabled = false;
+	}
 };
 
 mywsServer.onmessage = function(event: MessageEvent) {

@@ -5,19 +5,19 @@ import path from "path";
 
 const app = express();
 const myServer = http.createServer(app);
+const wsServer = new WebSocket.Server({ noServer: true });
+const PORT = 9876;
 
-app.use("/", express.static(path.resolve(__dirname, "../client")))
+app.use("/", express.static(path.resolve(__dirname, '../client/index.html')))
+console.log(`path.resolve`, path.resolve(__dirname, '../client/index.html'))
 
-const wsServer = new WebSocket.Server({
-	noServer: true
-})
 
 interface WebSocketClient {
 	send: (data: WebSocket.Data) => void;
 	readyState: number;
 }
 
-wsServer.on('connection', function (ws: WebSocket, req: any) {  
+wsServer.on('connection', function (ws: WebSocket) {  
 	ws.on('message', function (msg: string) {
 		const receivedObj = JSON.parse(msg);
 		console.log('parsedObj:', receivedObj);
@@ -39,9 +39,6 @@ myServer.on("upgrade", async function upgrade(request, socket, head) {
 	});
 }); 
 
-
-// Start the server
-const PORT = 9876;
 myServer.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
-}); 
+});
